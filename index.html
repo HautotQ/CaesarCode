@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chiffrement César</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+        .output {
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chiffrement César</h1>
+    
+    <label for="textInput">Texte à chiffrer :</label>
+    <input type="text" id="textInput" placeholder="Entrez le texte à chiffrer">
+    
+    <br>
+    
+    <label for="shiftSlider">Valeur du décalage : <span id="shiftValue">0</span></label>
+    <input type="range" id="shiftSlider" min="-100" max="100" step="1" value="0">
+    
+    <br>
+    
+    <label for="stepper">Précision du décalage :</label>
+    <input type="number" id="stepper" value="0" min="-100" max="100" step="1">
+    
+    <br><br>
+    
+    <button onclick="encryptText()">Chiffrer</button>
+    <button onclick="copyText()">Copier le résultat</button>
+    
+    <div id="output" class="output"></div>
+    
+    <script>
+        const shiftSlider = document.getElementById('shiftSlider');
+        const stepper = document.getElementById('stepper');
+        const shiftValueDisplay = document.getElementById('shiftValue');
+        const textInput = document.getElementById('textInput');
+        const output = document.getElementById('output');
+
+        // Met à jour la valeur du décalage lorsque le slider ou le stepper change
+        shiftSlider.addEventListener('input', function() {
+            const value = parseInt(shiftSlider.value);
+            shiftValueDisplay.textContent = value;
+            stepper.value = value;
+        });
+
+        stepper.addEventListener('input', function() {
+            const value = parseInt(stepper.value);
+            shiftSlider.value = value;
+            shiftValueDisplay.textContent = value;
+        });
+
+        // Fonction pour chiffrer le texte
+        function encryptText() {
+            const text = textInput.value.toUpperCase();
+            const shift = parseInt(shiftSlider.value);
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let encryptedText = '';
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const index = alphabet.indexOf(char);
+                if (index !== -1) {
+                    const newIndex = (index + shift + alphabet.length) % alphabet.length;
+                    encryptedText += alphabet[newIndex];
+                } else {
+                    encryptedText += char;
+                }
+            }
+
+            output.textContent = encryptedText;
+        }
+
+        // Fonction pour copier le texte chiffré
+        function copyText() {
+            const text = output.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Texte copié dans le presse-papiers');
+            });
+        }
+    </script>
+</body>
+</html>
